@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
+    <title>Agregar un nuevo producto</title>
+</head>
+<body>
+    <form class="p-4">
+        <div class="form-group">
+            <input type="text" class="form-control" id="name" placeholder="Nombre del producto" autofocus>
+        </div>
+
+        <div class="form-group">
+            <input type="text" class="form-control" id="price" placeholder="Precio del producto">
+        </div>
+
+        <div class="form-group">
+            <input type="text" class="form-control" id="description" placeholder="Descripción del producto">
+        </div>
+
+        <button class="btn btn-primary btn-block">
+            Agregar
+        </button>
+    </form>
+
+    <script>
+        const electron = require('electron');
+        const ipc = electron.ipcRenderer;
+
+        const form = document.querySelector('form');
+        const name = document.getElementById('name');
+        const price = document.getElementById('price');
+        const description = document.getElementById('description');
+
+        console.log(form);
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const product = {
+                name: name.value,
+                price: price.value,
+                description: description.value
+            };
+
+            ipc.send('product:new', product);
+            event.preventDefault();
+        });
+    </script>
+</body>
+</html>

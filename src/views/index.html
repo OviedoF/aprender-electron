@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
+    <title>Inicio</title>
+</head>
+<body>
+    <div class="container p-4">
+        <div class="row" id="products">
+
+        </div>
+    </div>
+
+    <script>
+        const electron = require('electron');
+        const ipc = electron.ipcRenderer;
+
+        const products = document.getElementById('products');
+
+        ipc.on('product:new', (e, newProduct) => {
+            const template = `
+                <div class="col-md-4">
+                    <div class="card my-4">
+                        <div class="card-header">
+                            <h5>${newProduct.name}</h5>
+                        </div>
+                        <div class="card-body">
+                            <strong>Precio: </strong>${newProduct.price}
+                            <p><strong>Descripción: </strong>${newProduct.description}</p>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-danger btn-block">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            products.innerHTML += template;
+
+            const buttons = document.querySelectorAll('.btn.btn-danger') 
+
+            buttons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const button = e.target;
+
+                    const card = button.parentElement.parentElement.parentElement;
+
+                    card.remove();
+                })
+            })
+        });
+
+        ipc.on('product:remove-all', (e) => {
+            console.log('Eliminando todos los productos');
+            products.innerHTML = '';
+        });
+    </script>
+</body>
+</html>
